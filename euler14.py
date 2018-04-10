@@ -1,17 +1,17 @@
-def longest_collatz_sequence(n):
-    length = 2
-    current = 2
-    while current < n or (current-1) % 3 == 0:
-        # if (current-1) % 3 == 0:
-        #     current = current / 3
-        print(current)
-        next = (current-1) / 3
-        if next != 0 and next != 1 and ((next-1) % 3 != 2 and not next % 2 == 0) and next.is_integer():
-            current = int(next)
+def count_collatz_steps(n, pre_calc):
+    steps = 1
+    init_n = n
+    while(n > 1):
+        if n in pre_calc:
+            steps += pre_calc[n] - 1
+            break
+        if n % 2 == 0:
+            n //= 2
         else:
-            current *= 2
-        length += 1
-    return current // 2
+            n = 3*n + 1
+        steps += 1
+    pre_calc[init_n] = steps
+    return steps
 
 def validate_collatz(n):
     while(n > 1):
@@ -21,6 +21,18 @@ def validate_collatz(n):
         else:
             n = 3*n + 1
     print(1)
+
+def longest_collatz(upper_limit):
+    longest = 1
+    length = 0
+    pre_calc = dict()
+    for n in range(1, upper_limit):
+        current_length = count_collatz_steps(n, pre_calc)
+        if current_length > length:
+            longest = n
+            length = current_length
+    return longest
+
 if __name__ == '__main__':
-    res = longest_collatz_sequence(1000000)
-    validate_collatz(res)
+    res = longest_collatz(1000000)
+    print(res)
